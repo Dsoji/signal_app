@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "63897695345",
+    "project_id": "greepipsfx-project",
+    "storage_bucket": "greepipsfx-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63897695345:android:344f2def8e8872a4e457d0",
+        "android_client_info": {
+          "package_name": "com.example.signal_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63897695345-82ta62ndejdmj1r8q6g4bvu1ouiel675.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3CarAXcMWHNbW6OuY3llmhlAskmcL9n4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63897695345-82ta62ndejdmj1r8q6g4bvu1ouiel675.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
