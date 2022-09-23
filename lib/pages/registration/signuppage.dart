@@ -1,23 +1,48 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:signal_app/pages/registration/LoginPage.dart';
-import 'package:signal_app/pages/registration/reset_password.dart';
-import 'package:signal_app/widgets/re_usedfield.dart';
-
-import '../../widgets/re_used_buttons.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  final VoidCallback showLoginPage;
+  const SignUpPage({
+    Key? key,
+    required this.showLoginPage,
+  }) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  bool _isVisible = false;
-  String _passwordVal = '';
-  String _emailVal = '';
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmpasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmpasswordController.dispose();
+    super.dispose();
+  }
+
+  Future signUp() async {
+    if (passwordConfirmed()) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+    }
+  }
+
+  bool passwordConfirmed() {
+    if (_passwordController.text.trim() ==
+        _confirmpasswordController.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'Regiater with us',
+                            'Register with us',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 28,
@@ -83,100 +108,117 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ReUsedFields(
-                          hintText: 'Email',
-                          height: 48,
-                          isSuffixIcon: false,
-                          onChanged: (value) {
-                            setState(() {
-                              _emailVal = value;
-                            });
-                          },
-                          textEditingController: null,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ReUsedFields(
-                          hintText: 'Password',
-                          height: 48,
-                          isSuffixIcon: true,
-                          icon: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _isVisible = !_isVisible;
-                              });
-                            },
-                            child: Icon(_isVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _passwordVal = value;
-                            });
-                          },
-                          textEditingController: null,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ReUsedFields(
-                          hintText: 'Confirm Password',
-                          height: 48,
-                          isSuffixIcon: true,
-                          icon: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _isVisible = !_isVisible;
-                              });
-                            },
-                            child: Icon(_isVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _passwordVal = value;
-                            });
-                          },
-                          textEditingController: null,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            child: const Text(
-                              'Sign up with google',
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
+                        child: TextField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            onTap: () =>
-                                Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const ResetpswrdPage(),
-                            )),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.blueGrey),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            hintText: "Email",
+                            fillColor: Colors.grey[200],
+                            filled: true,
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          obscureText: true,
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.blueGrey),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            hintText: "Password",
+                            fillColor: Colors.grey[200],
+                            filled: true,
+                          ),
+                        ),
+                      ),
+
+                      ///confirm password field
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          obscureText: true,
+                          controller: _confirmpasswordController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.blueGrey),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            hintText: "Confirm Password",
+                            fillColor: Colors.grey[200],
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Text(
+                            'I am a member ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: widget.showLoginPage,
+                            child: const Text(
+                              'Login Now',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
                       const SizedBox(
                         height: 16,
                       ),
-                      RedButton(
-                        text: 'Sign Up',
-                        width: 120,
-                        color: _emailVal != '' && _passwordVal != ''
-                            ? Colors.blueAccent
-                            : const Color(0xFFFBD4D5),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        },
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: GestureDetector(
+                          onTap: signUp,
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Sign Up",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ]),
                   ),
